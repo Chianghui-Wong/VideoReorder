@@ -1,22 +1,3 @@
-# VIOLET: End-to-End Video-Language Transformers with Masked Visual-token Modeling
-A **PyTorch** implementation of [VIOLET](https://tsujuifu.github.io/pubs/arxiv_violet.pdf)
-
-<img src='_imgs/intro.png' width='50%' />
-
-## Overview
-VIOLET is an implementation of <br>
-"[VIOLET: End-to-End Video-Language Transformers with Masked Visual-token Modeling](https://tsujuifu.github.io/pubs/arxiv_violet.pdf)" <br>
-[Tsu-Jui Fu](https://tsujuifu.github.io), [Linjie Li](https://scholar.google.com/citations?user=WR875gYAAAAJ), [Zhe Gan](https://zhegan27.github.io), [Kevin Lin](https://sites.google.com/site/kevinlin311tw/me), [William Yang Wang](https://sites.cs.ucsb.edu/~william), [Lijuan Wang](https://scholar.google.com/citations?user=cDcWXuIAAAAJ), and [Zicheng Liu](https://scholar.google.com/citations?user=bkALdvsAAAAJ)
-
-<img src='_imgs/violet.png' width='80%' />
-
-VIOLET contains 3 components: **Video Swin Transformer (VT)** computes video features; **Language Embedder (LE)** extracts word embeddings; **Cross-modal Transformer (CT)** performs cross-modal fusion. To benefit from large-scale data, we incorporate 3 pretraining tasks: **Masked Language Modeling (MVM)** predicts the masked word tokens; **Masked Visual-token Modeling (MVM)** recovers the masked video patches; **Visual-Text Matching (VTM)** learns the alignments between video and text modality.
-
-## Requirements
-This code is implemented under **Python 3.8**, [PyTorch 1.7](https://pypi.org/project/torch/1.7.0), and [Torchvision 0.8](https://pypi.org/project/torchvision/0.8.0). <br>
-+ [av](https://pypi.org/project/av), [tqdm](https://pypi.org/project/tqdm), [cv2](https://pypi.org/project/opencv-python)
-+ [DALL-E](https://github.com/openai/DALL-E)
-+ [transformers](https://pypi.org/project/transformers)
 
 ## Usage
 ### Data preprocessing
@@ -58,21 +39,3 @@ CUDA_VISIBLE_DEVICES='0,1,2,3' python main_retrieval.py _data/args_msrvtt-retrie
 CUDA_VISIBLE_DEVICES='0,1,2,3' python eval_retrieval.py _data/args_msrvtt-retrieval.json
 ```
 We also provide all [trained downstream checkpoints](https://drive.google.com/drive/u/1/folders/1cQ3O_9lxhjU_H6hpdyEb4GMjjb714wSo).
-
-## Citation
-```
-@inproceedings{fu2022empirical-mvm, 
-  author = {Tsu-Jui Fu* and Linjie Li* and Zhe Gan and Kevin Lin and William Yang Wang and Lijuan Wang and Zicheng Liu}, 
-  title = {An Empirical Study of End-to-End Video-Language Transformers with Masked Visual Modeling}, 
-  booktitle = {arXiv:2209.01540}, 
-  year = {2022} 
-}
-```
-```
-@inproceedings{fu2021violet, 
-  author = {Tsu-Jui Fu and Linjie Li and Zhe Gan and Kevin Lin and William Yang Wang and Lijuan Wang and Zicheng Liu}, 
-  title = {VIOLET: End-to-End Video-Language Transformers with Masked Visual-token Modeling}, 
-  booktitle = {arXiv:2111.1268}, 
-  year = {2021} 
-}
-```
