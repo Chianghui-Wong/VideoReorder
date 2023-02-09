@@ -107,6 +107,27 @@ def TripleLengthMatching(Pred, GT):
     score = score_num / score_deno
     return score
 
+def DoubleLengthMatching(Pred, GT):
+    '''
+    Only consider len(subset) = 2
+    eg: [0, 1, 3, 2]
+    for len(subset) = 2 , subscore = 5 / 6
+    we have score = 0.83
+    '''
+    N = len(Pred)
+    score_num = 0 #numerator
+    score_deno = 0 #denominator   
+    if GT == [] : GT = [i for i in range(N)]
+
+    assert(N >= 2)
+    for i in rSublist(Pred, 2):
+        if is_sublist(i, GT):
+            score_num += 1
+        score_deno += 1
+
+    score = score_num / score_deno
+    return score
+
 def StrictLengthMatching(Pred):
     '''
     Only all the order is correct gain 1 score, else 0
@@ -119,6 +140,11 @@ def StrictLengthMatching(Pred):
 
 
 if __name__ == '__main__':
+    # TODO change input type
+    '''
+    $python metrics.py -M <str: metric type> -G <list: GT order> -P <list: Predict order>
+    $python metrics.py -M <str: metric type> -R <int: random length>
+    '''
     metric_type = sys.argv[1]
     input = sys.argv[2:]
     metric_func = StrictLengthMatching
@@ -129,6 +155,8 @@ if __name__ == '__main__':
         metric_func = ArbitraryLengthMatching
     elif metric_type == 'triple':
         metric_func = TripleLengthMatching
+    elif metric_type == 'double':
+        metric_func = DoubleLengthMatching
     elif metric_type == 'strict':
         metric_func = StrictLengthMatching
     else:
