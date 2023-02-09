@@ -75,6 +75,7 @@ def ArbitraryLengthMatching(Pred, GT):
     N = len(Pred)
     score_num = 0 #numerator
     score_deno = 0 #denominator
+    if GT == [] : GT = [i for i in range(N)]
 
     for length in range(2, N+1):
         for i in rSublist(Pred, length):
@@ -95,6 +96,7 @@ def TripleLengthMatching(Pred, GT):
     N = len(Pred)
     score_num = 0 #numerator
     score_deno = 0 #denominator   
+    if GT == [] : GT = [i for i in range(N)]
 
     assert(N >= 3)
     for i in rSublist(Pred, 3):
@@ -114,7 +116,6 @@ def StrictLengthMatching(Pred):
             return 0
     
     return 1
-
 
 
 if __name__ == '__main__':
