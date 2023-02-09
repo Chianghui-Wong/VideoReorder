@@ -59,7 +59,7 @@ def is_sublist(shortlist, longlist):
             return False
     return True
 
-def ArbitraryLengthMatching(Pred):
+def ArbitraryLengthMatching(Pred, GT):
     '''
     input: Pred list is from get_order_list(), normally GT is [0, 1, 2, ...]
     output: the score give to the Pred, score is from 0 to 1
@@ -73,7 +73,6 @@ def ArbitraryLengthMatching(Pred):
         # or score = (5+2+0) / (6+4+1) = 7 / 11
     '''
     N = len(Pred)
-    GT = range(N)
     score_num = 0 #numerator
     score_deno = 0 #denominator
 
@@ -86,7 +85,7 @@ def ArbitraryLengthMatching(Pred):
     score = score_num / score_deno
     return score
 
-def TripleLengthMatching(Pred):
+def TripleLengthMatching(Pred, GT):
     '''
     Only consider len(subset) = 3
     eg: [0, 1, 3, 2]
@@ -94,7 +93,6 @@ def TripleLengthMatching(Pred):
     we have score = 0.5
     '''
     N = len(Pred)
-    GT = range(N)
     score_num = 0 #numerator
     score_deno = 0 #denominator   
 
@@ -124,7 +122,7 @@ if __name__ == '__main__':
     input = sys.argv[2:]
     metric_func = StrictLengthMatching
     output = 0.0
-    
+    GT = [8, 7, 3, 9, 6, 1, 4, 10 , 2, 5]
 
     if metric_type == 'arbitrary':
         metric_func = ArbitraryLengthMatching
@@ -137,7 +135,7 @@ if __name__ == '__main__':
 
     if len(input) > 1:
         input_ordered = get_order_list(input)
-        output = metric_func(input_ordered)
+        output = metric_func(input_ordered, GT)
     elif False and len(input) == 1 and metric_type == 'arbitrary':
         times = 10000
         input_list = list(range(int(input[0])))
