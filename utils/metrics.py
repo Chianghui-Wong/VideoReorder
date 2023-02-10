@@ -5,6 +5,7 @@ from scipy.special import comb, perm
 from itertools import combinations, permutations
 import sys
 import random
+import argparse
 
 def get_order_list(input):
     '''
@@ -149,7 +150,7 @@ if __name__ == '__main__':
     input = sys.argv[2:]
     metric_func = StrictLengthMatching
     output = 0.0
-    GT = [8, 7, 3, 9, 6, 1, 4, 10 , 2, 5]
+    GT = []
 
     if metric_type == 'arbitrary':
         metric_func = ArbitraryLengthMatching

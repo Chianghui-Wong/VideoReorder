@@ -40,4 +40,4 @@ class TCBP(torch.nn.Module):
 		return out
 
 if __name__ == '__main__':
-    #TODO
+    pass
