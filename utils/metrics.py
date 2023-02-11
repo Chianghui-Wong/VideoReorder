@@ -60,7 +60,7 @@ def is_sublist(shortlist, longlist):
             return False
     return True
 
-def ArbitraryLengthMatching(Pred, GT):
+def ArbitraryLengthMatching(Pred, GT=[]):
     '''
     input: Pred list is from get_order_list(), normally GT is [0, 1, 2, ...]
     output: the score give to the Pred, score is from 0 to 1
@@ -87,7 +87,7 @@ def ArbitraryLengthMatching(Pred, GT):
     score = score_num / score_deno
     return score
 
-def TripleLengthMatching(Pred, GT):
+def TripleLengthMatching(Pred, GT=[]):
     '''
     Only consider len(subset) = 3
     eg: [0, 1, 3, 2]
@@ -108,7 +108,7 @@ def TripleLengthMatching(Pred, GT):
     score = score_num / score_deno
     return score
 
-def DoubleLengthMatching(Pred, GT):
+def DoubleLengthMatching(Pred, GT=[]):
     '''
     Only consider len(subset) = 2
     eg: [0, 1, 3, 2]

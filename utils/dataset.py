@@ -8,7 +8,7 @@ from PIL import Image
 from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 import os
 import random
-import tqdm
+from tqdm import tqdm
 
 
 class DataAugmentationForVRM(object):
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     train_data = VideoReorderMovieNetDataFolder(data_path, split)
     train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=1, shuffle=(split == 'train'), num_workers=1, pin_memory=True, collate_fn=lambda x: x)
 
-    for data in tqdm(train_dataloader):
+    for data in train_dataloader:
         # print("data shape is", np.array(data).shape)
         for img_list, text_list in data:
             for img, text in zip(img_list, text_list):
