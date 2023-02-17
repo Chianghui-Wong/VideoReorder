@@ -1,9 +1,11 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from .metrics import get_order_index
+from utils.metrics import get_order_index
 
-class PairWiseLoss(nn.Module):
+#  Loss 1:
+#  Use the function as 'Deep Multimodal Feature Encoding for Video Ordering'
+class ClipPairWiseLoss(nn.Module):
     '''
     For the right order i < j, the Loss defined as  
     L(V_i, V_j) = ||max( 0,  \phi_t(V_i)-\phi_t(V_j) ) ||^2
@@ -14,19 +16,19 @@ class PairWiseLoss(nn.Module):
     ''' 
 
     def __init__(self, **kwargs):
-        super(PairWiseLoss, self).__init__()
+        super(ClipPairWiseLoss, self).__init__()
         return
     
-    def forward(self, repr):
+    def forward(self, repr, GT):
         '''
         repr is a M * (N ?) torch
         M is the number of clips
         the other demension is the feature vector of the clip
         '''
         loss_total = 0.0
-        len = repr.shape[0]
-        for i in range(len):
-            for j in range(i+1, len):
+        # len = repr.shape[0]
+        for idx, i in enumerate(GT):
+            for j in GT[idx+1:]:
                 phi_V_diff = torch.sub(repr[i], repr[j])
                 zero = torch.zeros_like(phi_V_diff)
                 phi_V_max_with_0 = torch.where(phi_V_diff < 0, zero, phi_V_diff)
@@ -34,10 +36,10 @@ class PairWiseLoss(nn.Module):
         
         return loss_total
 
-class PairWisePred(nn.Module):
+class ClipPairWisePred(nn.Module):
 
     def __init__(self, **kwargs):
-        super(PairWisePred, self).__init__()
+        super(ClipPairWisePred, self).__init__()
         return
 
     def pair_frame_loss(self, feature_i, feature_j):
@@ -98,12 +100,15 @@ class PairWisePred(nn.Module):
         pred_list = get_order_index(ordered_list)
         return pred_list
 
+## Loss2:
+## Use Loss Function as 'Probing Script Knowledge From Pre-Trained Models'
+
 
 
 
 
 if __name__ == '__main__':
-    LossFunc = PairWiseLoss()
+    LossFunc = ClipPairWiseLoss()
     #input = torch.tensor([[1], [2], [3], [4]]).float()
     input = torch.tensor([[3], [4], [2], [1]]).float()
     loss = LossFunc(input)

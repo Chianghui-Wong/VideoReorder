@@ -1,4 +1,5 @@
-from .loss_functions import *
 from .metrics import *
-from .TCBP import *
+from .loss_functions import *
+from .TCBP import TCBP
 from .dataset import *
+from .layer_clip import *

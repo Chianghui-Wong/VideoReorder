@@ -6,6 +6,7 @@ from itertools import combinations, permutations
 import sys
 import random
 import argparse
+import numpy as np
 
 def get_order_list(input):
     '''
@@ -48,6 +49,9 @@ def is_sublist(shortlist, longlist):
     '''
     Whether shortlist is a subset of longlist, the elements should have same order
     '''
+
+    assert False, ''
+
     jdx = 0
     for i in range(len(shortlist)):
         flag = False
@@ -78,6 +82,8 @@ def ArbitraryLengthMatching(Pred, GT=[]):
     score_deno = 0 #denominator
     if GT == [] : GT = [i for i in range(N)]
 
+    assert False, 'A bug have not finished' # TODO
+
     for length in range(2, N+1):
         for i in rSublist(Pred, length):
             if is_sublist(i, GT):
@@ -98,12 +104,20 @@ def TripleLengthMatching(Pred, GT=[]):
     score_num = 0 #numerator
     score_deno = 0 #denominator   
     if GT == [] : GT = [i for i in range(N)]
+    if torch.is_tensor(Pred): Pred = Pred.cpu().numpy().tolist()
+    if torch.is_tensor(GT): GT = GT.cpu().numpy().tolist()
 
     assert(N >= 3)
-    for i in rSublist(Pred, 3):
-        if is_sublist(i, GT):
-            score_num += 1
-        score_deno += 1
+    # for i in rSublist(Pred, 3):
+    #     if is_sublist(i, GT):
+    #         score_num += 1
+    #     score_deno += 1
+
+    Pred_Sublist = rSublist(Pred, 3)
+    GT_Sublist = rSublist(GT, 3)
+    
+    score_num = len(set(Pred_Sublist) & set(GT_Sublist))
+    score_deno = len(Pred_Sublist)
 
     score = score_num / score_deno
     return score
@@ -119,12 +133,20 @@ def DoubleLengthMatching(Pred, GT=[]):
     score_num = 0 #numerator
     score_deno = 0 #denominator   
     if GT == [] : GT = [i for i in range(N)]
+    if torch.is_tensor(Pred): Pred = Pred.cpu().numpy().tolist()
+    if torch.is_tensor(GT): GT = GT.cpu().numpy().tolist()
 
     assert(N >= 2)
-    for i in rSublist(Pred, 2):
-        if is_sublist(i, GT):
-            score_num += 1
-        score_deno += 1
+    # for i in rSublist(Pred, 2):
+    #     if is_sublist(i, GT):
+    #         score_num += 1
+    #     score_deno += 1
+
+    Pred_Sublist = rSublist(Pred, 2)
+    GT_Sublist = rSublist(GT, 2)
+    
+    score_num = len(set(Pred_Sublist) & set(GT_Sublist))
+    score_deno = len(Pred_Sublist)
 
     score = score_num / score_deno
     return score
