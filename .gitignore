@@ -1,8 +1,8 @@
-
+wandb/
 __pycache__
 *.pyc
-.ipynb_checkpoints
+.ipynb_checkpoints/
 *.pt
 *.pth
-_snapshot
+_snapshot/
 _data/*.pth

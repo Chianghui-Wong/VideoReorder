@@ -8,6 +8,11 @@ import random
 import argparse
 import numpy as np
 
+def torch_to_list(input):
+    if torch.is_tensor(input): 
+        input = input.cpu().numpy().tolist()   
+    return input
+
 def get_order_list(input):
     '''
     input: a list of float 
@@ -16,6 +21,7 @@ def get_order_list(input):
     output: the order of the float
     eg: [2, 0, 1]
     '''
+    if torch.is_tensor(input): input = input.cpu().numpy().tolist()
     ordered = sorted(input)
     output = []
     for i in input:
@@ -108,10 +114,7 @@ def TripleLengthMatching(Pred, GT=[]):
     if torch.is_tensor(GT): GT = GT.cpu().numpy().tolist()
 
     assert(N >= 3)
-    # for i in rSublist(Pred, 3):
-    #     if is_sublist(i, GT):
-    #         score_num += 1
-    #     score_deno += 1
+
 
     Pred_Sublist = rSublist(Pred, 3)
     GT_Sublist = rSublist(GT, 3)
@@ -137,10 +140,6 @@ def DoubleLengthMatching(Pred, GT=[]):
     if torch.is_tensor(GT): GT = GT.cpu().numpy().tolist()
 
     assert(N >= 2)
-    # for i in rSublist(Pred, 2):
-    #     if is_sublist(i, GT):
-    #         score_num += 1
-    #     score_deno += 1
 
     Pred_Sublist = rSublist(Pred, 2)
     GT_Sublist = rSublist(GT, 2)
@@ -161,6 +160,16 @@ def StrictLengthMatching(Pred):
     
     return 1
 
+def LengthOfLIS(nums):
+    torch_to_list(nums)
+    if not nums:
+        return 0
+    dp = [1 for _ in range(len(nums))]
+    for i in range(1, len(nums)):
+        for j in range(i):
+            if nums[j] < nums[i]:
+                dp[i] = max(dp[i], dp[j]+1)
+    return max(dp)
 
 if __name__ == '__main__':
     # TODO change input type
