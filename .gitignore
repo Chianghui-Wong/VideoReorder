@@ -6,3 +6,4 @@ __pycache__
 *.pth
 _snapshot/
 _data/*.pth
+test/
