@@ -69,6 +69,9 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
         if self.layer == "shot":
             return self.data[index]['feature'], self.data[index]['gt_id']
 
+        if self.layer == 'scene':
+            return self.data[index]['feature'], self.data[index]['gt_id']
+
 class VideoReorderMovieNetDataLoader(object):
     def __init__(self) -> None:
         pass

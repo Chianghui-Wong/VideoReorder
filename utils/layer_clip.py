@@ -45,7 +45,6 @@ def clip_to_shot(clip_gt_id, clip_shot_id):
             shot_input_id_ele.append(clip_input_id_sorted[idx])
             idx += 1
         shot_input_id.append(shot_input_id_ele)
-    # print(shot_input_id)
 
     idx = 0
     shot_gt_id = []
@@ -55,12 +54,48 @@ def clip_to_shot(clip_gt_id, clip_shot_id):
             shot_gt_id_ele.append(clip_gt_id_sorted[idx])
             idx += 1
         shot_gt_id.append(shot_gt_id_ele)
-    #  print(shot_gt_id)
+    
     return shot_input_id, shot_gt_id
 
+def clip_to_scene(clip_gt_id, clip_shot_id, clip_scene_id):
+    '''
+    clip_input_id = [0,1,2,3,4,5,6,7,8,9,10,11,12]
+    clip_gt_id = [1,10,9,5,11,2,3,7,8,4,0,12,6]
+    clip_shot_id = [6,10,9,8,10,6,6,8,9,7,5,11,8]
+    clip_scene_id = [4,6,5,5,6,4,4,5,5,4,3,6,5]
+    ->
+    shot_input_id = [[10], [0, 5, 6], [9], [3, 7, 12], [2, 8], [1, 4], [11]]
+    shot_gt_id = [[0], [1, 2, 3], [4], [5, 7, 6], [9, 8], [10, 11], [12]]
+    ->
+    scene_input_id = [[[10]], [[0, 5, 6], [9]], [[3, 7, 12], [2, 8]], [[1, 4], [11]]]
+    scene_gt_id = [[[0]], [[1, 2, 3], [4]], [[5, 7, 6], [9, 8]], [[10, 11], [12]]]
+    '''
+    if torch.is_tensor(clip_scene_id): clip_scene_id = clip_scene_id.cpu().numpy().tolist()
+    shot_input_id, shot_gt_id = clip_to_shot(clip_gt_id, clip_shot_id)
+
+    scene_len_list = [i[1] for i in Counter(sorted(clip_scene_id)).items()]
+
+    idx = 0
+    scene_input_id = []
+    scene_gt_id = []
+    for scene_len in scene_len_list:
+        scene_input_id_ele = []
+        scene_gt_id_ele = []
+ 
+        jdx = 0
+        while jdx < scene_len:
+            scene_input_id_ele.append(shot_input_id[idx])
+            scene_gt_id_ele.append(shot_gt_id[idx])
+            jdx += len(shot_input_id[idx])
+            idx += 1
+        scene_input_id.append(scene_input_id_ele)
+        scene_gt_id.append(scene_gt_id_ele)
+
+    return scene_input_id, scene_gt_id
 
 if __name__ == '__main__':
-    clip_gt_id = torch.tensor([1,3,0,7,12,9,11,2,10,5,4,6,8])
-    clip_shot_id = torch.tensor([283,284,283,285,287,286,287,284,286,285,284,285,286])
+    clip_gt_id = torch.tensor([1,10,9,5,11,2,3,7,8,4,0,12,6])
+    clip_shot_id = torch.tensor([6,10,9,8,10,6,6,8,9,7,5,11,8])
+    clip_scene_id = torch.tensor([4,6,5,5,6,4,4,5,5,4,3,6,5])
 
-    clip_to_shot(clip_gt_id, clip_shot_id)
+    print(clip_to_scene(clip_gt_id, clip_shot_id, clip_scene_id))
