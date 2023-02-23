@@ -93,9 +93,37 @@ def clip_to_scene(clip_gt_id, clip_shot_id, clip_scene_id):
 
     return scene_input_id, scene_gt_id
 
+def clip_to_clip(clip_old_gt_id, clip_old_shot_id, clip_old_scene_id):
+    '''
+    clip_input_id = [0,1,2,3,4,5,6,7,8,9,10,11,12]
+    clip_gt_id = [1,10,9,5,11,2,3,7,8,4,0,12,6]
+    clip_shot_id = [6,10,9,8,10,6,6,8,9,7,5,11,8]
+    clip_scene_id = [4,6,5,5,6,4,4,5,5,4,3,6,5]
+    ->
+    scene_input_id = [[[10]], [[0, 5, 6], [9]], [[3, 7, 12], [2, 8]], [[1, 4], [11]]]
+    scene_gt_id = [[[0]], [[1, 2, 3], [4]], [[5, 7, 6], [9, 8]], [[10, 11], [12]]]
+    ->
+    clip_input_id = [[10], [0, 5, 6, 9], [3, 7, 12, 2, 8], [1, 4, 11]]
+    clip_gt_id = [[0], [1, 2, 3, 4], [5, 7, 6 ,9, 8], [10, 11, 12]]    
+    '''
+    scene_input_id, scene_gt_id = clip_to_scene(clip_old_gt_id, clip_old_shot_id, clip_old_scene_id)
+
+    clip_input_id, clip_gt_id = [],[]
+    for input, gt in zip(scene_input_id, scene_gt_id): #[[0, 5, 6], [9]]
+        clip_input_ele_id, clip_gt_ele_id = [],[] 
+        for input_ele, gt_ele in zip(input, gt): #[0,5,6]
+            for input_one, gt_one in zip(input_ele, gt_ele):
+                clip_input_ele_id.append(input_one)
+                clip_gt_ele_id.append(gt_one)
+        clip_input_id.append(clip_input_ele_id)
+        clip_gt_id.append(clip_gt_ele_id)
+
+    return clip_input_id, clip_gt_id
+
+
 if __name__ == '__main__':
     clip_gt_id = torch.tensor([1,10,9,5,11,2,3,7,8,4,0,12,6])
     clip_shot_id = torch.tensor([6,10,9,8,10,6,6,8,9,7,5,11,8])
     clip_scene_id = torch.tensor([4,6,5,5,6,4,4,5,5,4,3,6,5])
 
-    print(clip_to_scene(clip_gt_id, clip_shot_id, clip_scene_id))
+    print(clip_to_clip(clip_gt_id, clip_shot_id, clip_scene_id))

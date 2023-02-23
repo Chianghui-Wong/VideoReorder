@@ -40,8 +40,7 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
         
         self.root = Path(root)
 
-        if layer == 'clip' : layer = ''
-        if layer not in ['', 'shot', 'scene'] : assert False, 'No such clip name'
+        if layer not in ['', 'shot', 'scene', 'clip'] : assert False, 'No such clip name'
         self.layer = layer
 
         # read clip_id.json
@@ -71,6 +70,10 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
 
         if self.layer == 'scene':
             return self.data[index]['feature'], self.data[index]['gt_id']
+        
+        if self.layer == 'clip':
+            return self.data[index]['feature'], self.data[index]['gt_id']
+        
 
 class VideoReorderMovieNetDataLoader(object):
     def __init__(self) -> None:
