@@ -10,7 +10,7 @@ import numpy as np
 
 def torch_to_list(input):
     if torch.is_tensor(input): 
-        input = input.cpu().numpy().tolist()   
+        input = input.detach().cpu().numpy().tolist()   
     return input
 
 def get_order_list(input):
@@ -21,7 +21,7 @@ def get_order_list(input):
     output: the order of the float
     eg: [2, 0, 1]
     '''
-    if torch.is_tensor(input): input = input.cpu().numpy().tolist()
+    input = torch_to_list(input)
     ordered = sorted(input)
     output = []
     for i in input:
@@ -40,6 +40,7 @@ def get_order_index(input):
     ouput: the position of 0st 1st 2nd 3rd ...
     eg: [1, 2, 0]
     '''
+    input = torch_to_list(input)
     sorted_nums = sorted(enumerate(input), key=lambda x:x[1])
     output = [i[0] for i in sorted_nums]
 
@@ -110,8 +111,8 @@ def TripleLengthMatching(Pred, GT=[]):
     score_num = 0 #numerator
     score_deno = 0 #denominator   
     if GT == [] : GT = [i for i in range(N)]
-    if torch.is_tensor(Pred): Pred = Pred.cpu().numpy().tolist()
-    if torch.is_tensor(GT): GT = GT.cpu().numpy().tolist()
+    Pred = torch_to_list(Pred)
+    GT = torch_to_list(GT)
 
     assert(N >= 3)
 
@@ -136,8 +137,8 @@ def DoubleLengthMatching(Pred, GT=[]):
     score_num = 0 #numerator
     score_deno = 0 #denominator   
     if GT == [] : GT = [i for i in range(N)]
-    if torch.is_tensor(Pred): Pred = Pred.cpu().numpy().tolist()
-    if torch.is_tensor(GT): GT = GT.cpu().numpy().tolist()
+    Pred = torch_to_list(Pred)
+    GT = torch_to_list(GT)
 
     assert(N >= 2)
 
