@@ -42,7 +42,9 @@ def beam_search(score_square, begin_idx=0, beam_size=5):
                             [2, 3, 4, -inf, 1],
                             [1, 2, 3, 4, -inf]
                         ]
-
+    output:
+        path = [0, 3, 2, 1, 4]
+        score = 13
     '''
     N = len(score_square)
     beam_candidate = [
@@ -56,10 +58,9 @@ def beam_search(score_square, begin_idx=0, beam_size=5):
             
     for step_num in range(N-1):
         beam_candidate = beam_step_forward(beam_candidate, score_square, beam_size)
-        if step_num == N-3: continue
         beam_candidate = beam_sort_and_del(beam_candidate, beam_size)
 
-    return beam_candidate[0]['path']
+    return beam_candidate[0]#['path']
 
 if __name__ == '__main__':
     a =  [
