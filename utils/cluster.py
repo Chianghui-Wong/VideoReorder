@@ -2,6 +2,7 @@ import torch
 from torch import nn
 import numpy as np
 from sklearn.cluster import KMeans
+import copy
 
 def group_by_class(input, class_label):
     '''
@@ -47,6 +48,9 @@ def group_same_with(input, template):
     return output
 
 def KMeanAcc(cluster_id, gt_id, layer):
+    '''
+    Use IoU as Acc
+    '''
     # TODO 
     pass
 
@@ -72,7 +76,7 @@ def KMeanCLustering(features, input_id, gt_clusters, layer):
 
     if layer == 'scene':
         n_clusters = min(len(input_id), len(gt_clusters))
-        kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init='auto').fit(features)
+        kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init='auto').fit([i.detach().numpy() for i in features])
         kmeans_labels = kmeans.labels_
         output_id = group_by_class(input_id, kmeans_labels)
         features_clustered = group_same_with(features, output_id)
@@ -93,8 +97,9 @@ def KMeanCLustering(features, input_id, gt_clusters, layer):
 
 
 if __name__ == '__main__':
-    X = np.array([[[1, 2], [1, 4], [1, 0]], [[10, 2]], [[10, 4]], [[10, 0], [10, 3]]])
-    features_clustered, output_id = KMeanCLustering(X, [[0, 1, 2], [3], [4], [5, 6]], [[[0, 1], 2], [3], [4], [[5],[6]]], 'shot' )
+    gt_clusters = [[[10]], [[0, 5, 6], [9]], [[3, 7, 12], [2, 8]], [[1, 4], [11]]]
+    input_id = [[3, 7, 10, 12], [2, 8, 9, 11], [0, 4], [1, 5, 6]]
+    X = torch.load('./a.pt')
+    features_clustered, output_id = KMeanCLustering(X, input_id, gt_clusters, 'shot')
+    print(features_clustered, output_id)
 
-    print(features_clustered)
-    print(output_id)

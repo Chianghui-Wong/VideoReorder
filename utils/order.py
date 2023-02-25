@@ -62,6 +62,25 @@ def beam_search(score_square, begin_idx=0, beam_size=5):
 
     return beam_candidate[0]#['path']
 
+def beam_search_all(score_square, beam_size=5):
+
+    N = len(score_square)
+
+    beam_global_optim = \
+        {
+            'score': float('-inf'),
+            'path' : [0],
+            'rest' : [i for i in range(N)]
+        }
+
+    for begin_idx in range(N):
+        beam_local_optim = beam_search(score_square, begin_idx)
+        if beam_global_optim['score'] <= beam_local_optim['score']:
+            beam_global_optim=beam_local_optim
+    
+    return beam_global_optim
+
+
 if __name__ == '__main__':
     a =  [
             [float('-inf'), 4, 3, 2, 1],
@@ -70,4 +89,4 @@ if __name__ == '__main__':
             [2, 3, 4, float('-inf'), 1],
             [1, 2, 3, 4, float('-inf')]
         ]
-    print(beam_search(a, beam_size=5))
+    print(beam_search_all(a, beam_size=5))
