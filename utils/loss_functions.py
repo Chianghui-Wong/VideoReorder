@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from utils.metrics import get_order_index
+from tools import *
 
 #  Loss 1:
 #  Use the function as 'Deep Multimodal Feature Encoding for Video Ordering'

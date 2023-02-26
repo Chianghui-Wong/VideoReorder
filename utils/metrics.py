@@ -7,44 +7,8 @@ import sys
 import random
 import argparse
 import numpy as np
+from tools import *
 
-def torch_to_list(input):
-    if torch.is_tensor(input): 
-        input = input.detach().cpu().numpy().tolist()   
-    return input
-
-def get_order_list(input):
-    '''
-    input: a list of float 
-    eg: [7.5, -3.5, 2.5]
-
-    output: the order of the float
-    eg: [2, 0, 1]
-    '''
-    input = torch_to_list(input)
-    ordered = sorted(input)
-    output = []
-    for i in input:
-        for idx, j in enumerate(ordered):
-            if i == j:
-                output.append(idx)
-                break
-
-    return output
-
-def get_order_index(input):
-    '''
-    input: a order_idx list 
-    eg: [2, 0, 1]
-
-    ouput: the position of 0st 1st 2nd 3rd ...
-    eg: [1, 2, 0]
-    '''
-    input = torch_to_list(input)
-    sorted_nums = sorted(enumerate(input), key=lambda x:x[1])
-    output = [i[0] for i in sorted_nums]
-
-    return output
 
 def rSublist(arr, length):
     '''

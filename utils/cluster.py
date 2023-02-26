@@ -3,49 +3,8 @@ from torch import nn
 import numpy as np
 from sklearn.cluster import KMeans
 import copy
+from .tools import *
 
-def group_by_class(input, class_label):
-    '''
-    input and class_label are both list
-    class_label is one demension
-    input have same length on dim=0 with class_label
-
-    for example:
-        input =         [0, 1, 2, 3, 4, 5]
-        class_label = [2, 1, 0, 1, 2, 2]
-        output = [[2], [1, 3], [0, 4, 5]]
-    '''
-
-    n_class = max(class_label) - min(class_label) + 1
-    output = [[] for _ in range(n_class)]
-    for idx, label in enumerate(class_label):
-        output[label].append(input[idx])
-
-    return output
-
-def group_same_with(input, template):
-    '''
-    input and template are both list
-    template have one more dimension than input
-    add one dimension with the same way
-
-    for example:
-        input = [0, 1, 2, 3, 4, 5]
-        template = [[2], [1, 3], [0, 4, 5]]
-        output = [[0], [1,2], [3, 4, 5]]
-    '''
-    group_len = [len(i) for i in template]
-
-    idx = 0
-    output = []
-    for group_len_ele in group_len:
-        output_ele = []
-        for _ in range(group_len_ele):
-            output_ele.append(input[idx])
-            idx += 1
-        output.append(output_ele)
-    
-    return output
 
 def KMeanAcc(cluster_id, gt_id, layer):
     '''

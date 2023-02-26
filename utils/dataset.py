@@ -9,6 +9,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 import os
 import random
 from tqdm import tqdm
+from .tools import *
 
 
 class DataAugmentationForVRM(object):
@@ -40,7 +41,7 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
         
         self.root = Path(root)
 
-        if layer not in ['', 'shot', 'scene', 'clip'] : assert False, 'No such clip name'
+        if layer not in ['', 'frame', 'shot', 'scene', 'all'] : assert False, 'No such layer name'
         self.layer = layer
 
         # read clip_id.json
@@ -63,17 +64,10 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
     def __getitem__(self, index):
         if self.layer == "":
             clip_id = self.clip_list[index]
-            return self.data[clip_id]['feature'], self.data[clip_id]['img_id'], self.data[clip_id]['shot_id'], self.data[clip_id]['scene_id']
+            return self.data[clip_id]['feature'], self.data[clip_id]['gt_id'], self.data[clip_id]['shot_id'], self.data[clip_id]['scene_id']
         
-        if self.layer == "shot":
+        if self.layer in ['frame', 'shot', 'scene']:
             return self.data[index]['feature'], self.data[index]['gt_id']
-
-        if self.layer == 'scene':
-            return self.data[index]['feature'], self.data[index]['gt_id']
-        
-        if self.layer == 'clip':
-            return self.data[index]['feature'], self.data[index]['gt_id']
-        
 
 class VideoReorderMovieNetDataLoader(object):
     def __init__(self) -> None:
@@ -87,7 +81,7 @@ def build_VideoReorderMovieNet_dataset(args):
     '''
     return  list[list[], ...]
     the fisrt list is batch
-    the second is [['feature'], ['shot_id'], ['scene_id]]
+    the second is [['feature'], ['shot_id'], ...]
     '''
     transform = DataAugmentationForVRM(args)
     print("Data Aug = %s" % str(transform))

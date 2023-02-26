@@ -2,6 +2,7 @@ import torch
 from torch import nn
 import numpy as np
 import copy
+from tools import *
 
 def beam_sort_and_del(beam_candidate, beam_size):
     beam_candidate = sorted(beam_candidate, reverse=True, key=lambda x:x['score'])
