@@ -8,10 +8,20 @@ from .tools import *
 
 def KMeanAcc(cluster_id, gt_id, layer):
     '''
-    Use IoU as Acc
+    A simple acc
     '''
-    # TODO 
-    pass
+    total_len = 0
+    same_len = 0
+    if layer == 'scene':
+        for i in range(len(gt_id)):
+            same_len += len(set(cluster_id[i]) & set(gt_id[i]))
+            total_len += len(gt_id[i])
+        return same_len / total_len
+    
+    if layer == 'shot':
+        # TODO
+        pass
+
 
 def KMeanCLustering(features, input_id, gt_clusters, layer):
     '''

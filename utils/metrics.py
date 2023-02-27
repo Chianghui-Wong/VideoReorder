@@ -7,7 +7,7 @@ import sys
 import random
 import argparse
 import numpy as np
-from tools import *
+from .tools import *
 
 
 def rSublist(arr, length):

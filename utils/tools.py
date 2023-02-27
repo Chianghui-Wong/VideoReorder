@@ -3,16 +3,30 @@ from torch import nn
 import numpy as np
 import copy
 
-def class_start_zero(class_label):
+def class_start_zero(input):
     '''
-    input = [5, 4, 3, 4, 5]
-    output = [2, 1, 0, 1, 2] 
+    input = [6, 4, 3, 4, 6]
+    output = [2, 1, 0, 1, 2]
+    notice: there is no "5" in input, but output is still continuous
     '''
-    return [i-min(class_label) for i in class_label]
+    input_set = sorted(set(input))
+    map_dict = {}
+    for idx, input_set_ele in enumerate(input_set):
+        map_dict[input_set_ele] = idx
+    
+    output = []
+    for input_ele in input:
+        output.append(map_dict[input_ele])
+
+    return output
 
 def torch_to_list(input):
+
     if torch.is_tensor(input): 
-        output = input.detach().cpu().numpy().tolist()   
+        output = input.detach().cpu().numpy().tolist()
+    else:
+        output = input
+
     return output
 
 def get_order_list(input):
@@ -31,7 +45,6 @@ def get_order_list(input):
             if i == j:
                 output.append(idx)
                 break
-
     return output
 
 def get_order_index(input):
@@ -109,8 +122,6 @@ def group_by_class(input, class_label):
         output = [[2], [1, 3], [0, 4, 5]]
     '''
 
- 
-
     n_class = max(class_label) - min(class_label) + 1
     output = [[] for _ in range(n_class)]
     for idx, label in enumerate(class_label):
@@ -143,9 +154,9 @@ def group_same_with(input, template):
     return output
 
 if __name__ == '__main__':
-    input = [[0, 0.1, 0,5], [1, 2, 3,4, 5,6]]
+    input = [6, 4, 3, 4, 6]
     template = [4, 3, 2, 1]
 
-    print(list_del_first_dim(input))
+    print(class_start_zero(input))
 
     
