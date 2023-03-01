@@ -69,7 +69,9 @@ class OneLayer(nn.Module):
         text1_embed = self.text_embedding(text1)
 
         # encoder
-        encoder_input = torch.cat((text0_embed, text1_embed, img1_embed, img0_embed), dim=1)
+        encoder_input = torch.cat((text0_embed, text1_embed, img0_embed, img1_embed), dim=1)
+        if encoder_input.shape[1] > 512:
+            encoder_input = encoder_input[:, :512, :]
         pos0, pos1 = 0, text0_embed.size(1)
         encoder_output = self.encoder_transformer_blocked(inputs_embeds=encoder_input)[0] # B, text_len + path_len=132 , 768
 

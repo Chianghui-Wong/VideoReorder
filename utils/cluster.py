@@ -48,7 +48,7 @@ def KMeanCLustering(features, input_id, gt_clusters, layer):
         kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init='auto').fit([i.detach().numpy() for i in features])
         kmeans_labels = kmeans.labels_
         output_id = group_by_class(input_id, kmeans_labels)
-        features_clustered = group_same_with(features, output_id)
+        # features_clustered = group_same_with(features, output_id)
     else:
         # layer == 'shot'
         features_clustered, output_id = [], []
@@ -62,7 +62,7 @@ def KMeanCLustering(features, input_id, gt_clusters, layer):
             features_clustered.append(features_clustered_ele)
             output_id.append(output_id_ele)
     
-    return features_clustered, output_id
+    return output_id
 
 
 if __name__ == '__main__':
