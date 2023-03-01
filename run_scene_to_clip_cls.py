@@ -24,7 +24,7 @@ from models import *
 timestamp = time.strftime('%Y-%m-%d', time.localtime(time.time()))
 wandb.init(
     project = 'VideoReorder',
-    name = 'shot to scene cls'
+    name = 'scene to clip cls'
 )
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -32,11 +32,11 @@ os.environ['TOKENIZERS_PARALLELISM'] = 'true'
 
 data_path = '/home/jianghui/dataset/VideoReorder-MovieNet'
 split = 'train'
-train_data = VideoReorderMovieNetDataFolder(root=data_path, split=split, layer='shot')
+train_data = VideoReorderMovieNetDataFolder(root=data_path, split=split, layer='scene')
 train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=32, shuffle=(split == 'train'), num_workers=0, pin_memory=True, collate_fn=lambda x: x)
 
 split = 'val'
-val_data = VideoReorderMovieNetDataFolder(root=data_path, split=split, layer='shot')
+val_data = VideoReorderMovieNetDataFolder(root=data_path, split=split, layer='scene')
 val_dataloader = torch.utils.data.DataLoader(val_data, batch_size=32, shuffle=(split == 'train'), num_workers=0, pin_memory=True, collate_fn=lambda x: x)
 
 net = OneLayer()
@@ -72,9 +72,9 @@ for e in range(epoch):
             'num':0.0,
             }
 
-        for shot_data in batch_data: #clip data
+        for pair_data in batch_data: #clip data
             # read input data
-            img_features, text_features, gt = shot_data
+            img_features, text_features, gt = pair_data
 
             # processed_img = processor(images=imgs, return_tensors='pt').pixel_values.to(device)
 
@@ -131,9 +131,9 @@ for e in range(epoch):
                 'num':0.0,
                 }
 
-            for shot_data in batch_data: #clip data
+            for pair_data in batch_data: #clip data
                 # read input data
-                img_features, text_features, gt = shot_data
+                img_features, text_features, gt = pair_data
 
                 output = net([[img_features[0].to(device), img_features[1].to(device)], [text_features[0].to(device), text_features[1].to(device)]])
                 # loss_shot = loss_func(output, gt)
@@ -166,5 +166,5 @@ for e in range(epoch):
 
         if score_epoch >= best_val_acc: 
             best_val_acc = score_epoch
-            torch.save(net.state_dict(), Path('./checkpoint', f'shot_to_scene_best_{timestamp}.pth'))
+            torch.save(net.state_dict(), Path('./checkpoint', f'scene_to_clip_best_{timestamp}.pth'))
             print("save epoch ",e)
