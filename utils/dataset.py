@@ -42,11 +42,16 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
         
         self.root = Path(root)
 
-        if layer not in ['', 'frame', 'shot', 'scene', 'all'] : assert False, 'No such layer name'
+        if layer not in ['', 'frame', 'shot', 'scene', 'all', 'ori'] : assert False, 'No such layer name'
         self.layer = layer
 
         # read data .pt file
-        if self.layer == '':
+        if self.layer == 'ori':
+            with open(Path(self.root, 'clip_id.json'), 'r') as fr:
+                clip_id_json = json.load(fr)
+            self.clip_id_list = clip_id_json[self.split]
+
+        elif self.layer == '':
             self.data = torch.load(Path(self.root, f'{split}.pt'))
         else:
             self.data = torch.load(Path(self.root, f'{split}_{self.layer}.pt'))
@@ -54,15 +59,43 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
         return
     
     def __len__(self):
-        return len(self.data)
+        if self.layer == 'ori':
+            return len(self.clip_id_list)
+        else:
+            return len(self.data)
     
     def __getitem__(self, index):
         if self.layer == "":
-            return self.data[index]['features'], self.data[index]['gt_id'], self.data[index]['shot_id'], self.data[index]['scene_id']
+            return self.data[index]['img_features'], self.data[index]['text_features'], self.data[index]['gt_id'], self.data[index]['shot_id'], self.data[index]['scene_id']
         
         if self.layer in ['frame', 'shot', 'scene']:
-            return self.data[index]['features'], self.data[index]['gt_id']
+            return self.data[index]['img_features'], self.data[index]['text_features'], self.data[index]['gt_id']
+        
+        if self.layer in ['ori']:
+            clip_id = self.clip_id_list[index]
+            img_list = []
+            text_list = []
+            clip_path = Path(self.root, self.split, str(clip_id))
 
+            with open(Path(clip_path, 'info.json'), 'r') as f_r:
+                info_shuffled_json = json.load(f_r)
+            
+            # read text
+            with open(Path(clip_path, 'subtitle.json'), 'r') as f_r:
+                subtitle_json = json.load(f_r)
+
+            # read img
+            for img_id in info_shuffled_json['img_id']:
+                img_ele = Image.open(Path(clip_path, f'{clip_id}_{img_id}.jpg'))
+                img_list.append(img_ele)
+                text_list.append(subtitle_json[img_id])
+
+            return img_list, text_list
+
+
+
+
+            
 class VideoReorderMovieNetDataLoader(object):
     def __init__(self) -> None:
         pass

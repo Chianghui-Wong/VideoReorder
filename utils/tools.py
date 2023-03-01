@@ -63,7 +63,7 @@ def get_order_index(input):
 
 def same_shuffle(input, template):
     '''
-    template is a order of range(N)
+    template is a order of range(N)class_label
     shuffle the input with the same order
     '''
     ZIP = zip(input, template)
