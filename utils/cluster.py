@@ -4,26 +4,45 @@ import numpy as np
 from sklearn.cluster import KMeans
 import copy
 from .tools import *
+import itertools
 
 
-def KMeanAcc(cluster_id, gt_id, layer):
+
+def KMeanAcc(cluster_id, gt_id, layer='scene'):
     '''
     A simple acc
     '''
     total_len = 0
     same_len = 0
     if layer == 'scene':
-        for i in range(len(gt_id)):
-            same_len += len(set(cluster_id[i]) & set(gt_id[i]))
-            total_len += len(gt_id[i])
-        return same_len / total_len
+        
+        max_acc = 0.0
+        permut_list  = itertools.permutations(cluster_id)
+
+        iter_times = 0
+        for permut_ele in permut_list:
+            permut_ele_list = list(permut_ele)
+        
+            for i in range(len(gt_id)):
+                same_len += len(set(permut_ele_list[i]) & set(gt_id[i]))
+                total_len += len( set(permut_ele_list[i]).union(set(gt_id[i])) )
+            acc = same_len / total_len
+
+            if acc > max_acc: max_acc = acc
+
+            iter_times += 1
+            if iter_times > 1000:
+                break
+
+        return max_acc
     
     if layer == 'shot':
         # TODO
         pass
 
 
-def KMeanCLustering(features, input_id, gt_clusters, layer):
+
+def KMeanCLustering(features, input_id, gt_clusters, layer='scene'):
     '''
     features: input features, [0:512] is img feature, [512:1024] is text feature
     input_id : input id list, are mapped one-to-one with features
@@ -44,7 +63,8 @@ def KMeanCLustering(features, input_id, gt_clusters, layer):
     assert layer in ['scene', 'shot'], "layer value error"
 
     if layer == 'scene':
-        n_clusters = min(len(input_id), len(gt_clusters))
+        # n_clusters = min(len(input_id), len(gt_clusters))
+        n_clusters = gt_clusters
         kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init='auto').fit([i.detach().numpy() for i in features])
         kmeans_labels = kmeans.labels_
         output_id = group_by_class(input_id, kmeans_labels)

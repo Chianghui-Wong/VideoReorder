@@ -25,9 +25,8 @@ img1 = torch.rand(1, 50, 768)
 text0 = torch.rand(1, 17, 512)
 text1 = torch.rand(1, 16, 512)
 
-output = torch.cat([text0, text1], dim=1)
-print(output.shape)
-
+a = torch.nn.functional.softmax(torch.tensor([1.0, 100.0]))
+print(float(a[1] - a[0]))
 
 # tmp = text0[:,0,:]
 # print(tmp.shape)

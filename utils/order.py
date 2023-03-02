@@ -22,7 +22,11 @@ def beam_step_forward(beam_candidate, score_square, beam_size):
             q_list = q_list[:beam_size]
 
         for q in q_list:
-            beam_candidate_new_ele = copy.deepcopy(beam_candidate_ele)
+            try:
+                beam_candidate_new_ele = copy.deepcopy(beam_candidate_ele)
+            except:
+                beam_candidate_new_ele = beam_candidate_ele
+
             beam_candidate_new_ele['score'] += score_square[p][q]
             beam_candidate_new_ele['path'].append(q)
             beam_candidate_new_ele['rest'].remove(q)
