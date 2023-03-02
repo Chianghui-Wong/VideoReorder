@@ -42,7 +42,7 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
         
         self.root = Path(root)
 
-        if layer not in ['', 'frame', 'shot', 'scene', 'all', 'ori'] : assert False, 'No such layer name'
+        # if layer not in ['', 'frame', 'shot', 'scene', 'all', 'ori'] : assert False, 'No such layer name'
         self.layer = layer
 
         # read data .pt file
@@ -68,9 +68,6 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
         if self.layer == "":
             return self.data[index]['img_features'], self.data[index]['text_features'], self.data[index]['gt_id'], self.data[index]['shot_id'], self.data[index]['scene_id']
         
-        if self.layer in ['frame', 'shot', 'scene']:
-            return self.data[index]['img_features'], self.data[index]['text_features'], self.data[index]['gt_id']
-        
         if self.layer in ['ori']:
             clip_id = self.clip_id_list[index]
             img_list = []
@@ -92,6 +89,10 @@ class VideoReorderMovieNetDataFolder(torch.utils.data.Dataset):
 
             return img_list, text_list
 
+        if self.layer in ['frame', 'shot', 'scene']:
+            return self.data[index]['img_features'], self.data[index]['text_features'], self.data[index]['gt_id']
+        
+        return self.data[index]['img_features'], self.data[index]['text_features'], self.data[index]['gt_id']
 
 
 
