@@ -30,7 +30,7 @@ wandb.init(
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 os.environ['TOKENIZERS_PARALLELISM'] = 'true'
 
-data_path = '/home/jianghui/dataset/VideoReorder-MovieNet'
+data_path = '/home/jax/dataset/VideoReorder-MovieNet'
 split = 'train'
 train_data = VideoReorderMovieNetDataFolder(root=data_path, split=split, layer='frame')
 train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=32, shuffle=(split == 'train'), num_workers=8, pin_memory=True, collate_fn=lambda x: x)
@@ -39,7 +39,7 @@ split = 'val'
 val_data = VideoReorderMovieNetDataFolder(root=data_path, split=split, layer='frame')
 val_dataloader = torch.utils.data.DataLoader(val_data, batch_size=32, shuffle=(split == 'train'), num_workers=8, pin_memory=True, collate_fn=lambda x: x)
 
-net = OneLayer_1()
+net = OneLayer_CL()
 net.to(device)
 wandb.watch(net)
 

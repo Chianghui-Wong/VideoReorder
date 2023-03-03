@@ -70,7 +70,7 @@ def frame2scene(gt_id, scene_id):
         [[10], [0, 5, 6, 9], [3, 7, 12, 2, 8], [1, 4, 11]]
     '''
 
-    return group_by_class(gt_id, sorted(class_start_zero(scene_id)))
+    return group_by_class(gt_id, sorted(scene_id))
 
 def all2scene(gt_id):
     '''

@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 import numpy as np
-from sklearn.cluster import KMeans
+from .kmeans import kmeans
 import copy
 from .tools import *
 import itertools
@@ -65,9 +65,20 @@ def KMeanCLustering(features, input_id, gt_clusters, layer='scene'):
     if layer == 'scene':
         # n_clusters = min(len(input_id), len(gt_clusters))
         n_clusters = gt_clusters
-        kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init='auto').fit([i.detach().numpy() for i in features])
-        kmeans_labels = kmeans.labels_
-        output_id = group_by_class(input_id, kmeans_labels)
+
+        X = torch.cat([i for i in features], dim=0)
+        print(X.size(), n_clusters)
+        if n_clusters <= 1:
+            print(input_id)
+            return [input_id]
+
+        # kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init='auto').fit([i.detach().squeeze().cpu().numpy() for i in features])
+        # kmeans_labels = kmeans.labels_
+        cluster_ids_x, cluster_centers = kmeans(
+            X=X, num_clusters=n_clusters, distance='dot', device=torch.device('cuda:0')
+        )
+        print(cluster_ids_x)
+        output_id = group_by_class_cluster(input_id, cluster_ids_x, n_clusters)
         # features_clustered = group_same_with(features, output_id)
     else:
         # layer == 'shot'

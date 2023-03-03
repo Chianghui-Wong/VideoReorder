@@ -125,6 +125,23 @@ def group_by_class(input, class_label):
     n_class = max(class_label) - min(class_label) + 1
     output = [[] for _ in range(n_class)]
     for idx, label in enumerate(class_label):
+        output[label-min(class_label)].append(input[idx])
+
+    return output
+
+def group_by_class_cluster(input, class_label, class_num):
+    '''
+    input and class_label are both list
+    class_label is one demension
+    input have same length on dim=0 with class_label
+
+    for example:
+        input =         [0, 1, 2, 3, 4, 5]
+        class_label = [2, 1, 0, 1, 2, 2]
+        output = [[2], [1, 3], [0, 4, 5]]
+    '''
+    output = [[] for _ in range(class_num)]
+    for idx, label in enumerate(class_label):
         output[label].append(input[idx])
 
     return output
